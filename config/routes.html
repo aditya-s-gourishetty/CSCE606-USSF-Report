@@ -47,7 +47,7 @@
     <div class="file-time">
       <span class="committed-at">
         
-          Updated <time class='js-timeago' datetime='2024-10-18 19:31:54 -0500'>2024-10-18 19:31:54 -0500</time>
+          Updated <time class='js-timeago' datetime='2024-11-01 18:42:50 -0500'>2024-11-01 18:42:50 -0500</time>
         
       </span>
     </div>
@@ -68,15 +68,15 @@
           </div>
           <div class="code-statistics col-md-11">
             <div class="col-md-3">
-              <div><span class="metric">28</span><small> lines of codes</small></div>
+              <div><span class="metric">45</span><small> lines of codes</small></div>
               <div><span class="metric">0</span><small> methods</small></div>
             </div>
             <div class="col-md-3">
               <div><span class="metric">N/A</span><small> complexity/method</small></div>
-              <div><span class="metric">15</span><small> churn</small></div>
+              <div><span class="metric">22</span><small> churn</small></div>
             </div>
             <div class="col-md-3">
-              <div><span class="metric">0.0</span><small> complexity</small></div>
+              <div><span class="metric">13.91</span><small> complexity</small></div>
               <div><span class="metric">0</span><small> duplications</small></div>
             </div>
           </div>
@@ -117,13 +117,30 @@
   root &quot;welcome#index&quot;
   get &quot;welcome/index&quot;, to: &quot;welcome#index&quot;, as: &quot;welcome&quot;
 
-  get &quot;/users/:id&quot;, to: &quot;users#show&quot;, as: &quot;user&quot;
-
   get &quot;/logout&quot;, to: &quot;sessions#logout&quot;, as: &quot;logout&quot;
   get &quot;/auth/google_oauth2/callback&quot;, to: &quot;sessions#omniauth&quot;
   get &quot;/auth/failure&quot;, to: &quot;sessions#failure&quot;, as: &quot;failure&quot;
 
-  resources :images
+  resources :run_time_objects do
+    resources :images do
+      member do
+        get :download
+      end
+    end
+  end
+
+  resources :run_time_objects do
+    resources :images do
+      post &quot;rescan&quot;, on: :member
+    end
+  end
+
+  resources :run_time_objects do
+    member do
+      get :share
+      post :share_with_users
+    end
+  end
 end
 </code>
   </div>

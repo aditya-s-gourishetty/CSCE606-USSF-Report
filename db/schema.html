@@ -47,7 +47,7 @@
     <div class="file-time">
       <span class="committed-at">
         
-          Updated <time class='js-timeago' datetime='2024-10-18 18:31:42 -0500'>2024-10-18 18:31:42 -0500</time>
+          Updated <time class='js-timeago' datetime='2024-10-26 13:25:33 -0500'>2024-10-26 13:25:33 -0500</time>
         
       </span>
     </div>
@@ -68,15 +68,15 @@
           </div>
           <div class="code-statistics col-md-11">
             <div class="col-md-3">
-              <div><span class="metric">53</span><small> lines of codes</small></div>
+              <div><span class="metric">66</span><small> lines of codes</small></div>
               <div><span class="metric">0</span><small> methods</small></div>
             </div>
             <div class="col-md-3">
               <div><span class="metric">N/A</span><small> complexity/method</small></div>
-              <div><span class="metric">2</span><small> churn</small></div>
+              <div><span class="metric">3</span><small> churn</small></div>
             </div>
             <div class="col-md-3">
-              <div><span class="metric">37.3</span><small> complexity</small></div>
+              <div><span class="metric">48.9</span><small> complexity</small></div>
               <div><span class="metric">78</span><small> duplications</small></div>
             </div>
           </div>
@@ -109,7 +109,7 @@
 #
 # It&#39;s strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_18_213708) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_26_165257) do
   create_table &quot;cve_nist_mappings&quot;, force: :cascade do |t|
     t.string &quot;cve_id&quot;
     t.text &quot;nist_control_identifiers&quot;
@@ -136,6 +136,17 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_18_213708) do
     t.index [&quot;user_id&quot;], name: &quot;index_run_time_objects_on_user_id&quot;
   end
 
+  create_table &quot;run_time_objects_permissions&quot;, force: :cascade do |t|
+    t.integer &quot;run_time_object_id&quot;, null: false
+    t.integer &quot;user_id&quot;, null: false
+    t.string &quot;permission&quot;
+    t.datetime &quot;created_at&quot;, null: false
+    t.datetime &quot;updated_at&quot;, null: false
+    t.index [&quot;run_time_object_id&quot;, &quot;user_id&quot;], name: &quot;index_run_time_objects_permissions_on_runtime_and_user&quot;, unique: true
+    t.index [&quot;run_time_object_id&quot;], name: &quot;index_run_time_objects_permissions_on_run_time_object_id&quot;
+    t.index [&quot;user_id&quot;], name: &quot;index_run_time_objects_permissions_on_user_id&quot;
+  end
+
   create_table &quot;users&quot;, force: :cascade do |t|
     t.string &quot;email&quot;
     t.string &quot;first_name&quot;
@@ -149,6 +160,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_18_213708) do
 
   add_foreign_key &quot;images&quot;, &quot;run_time_objects&quot;
   add_foreign_key &quot;run_time_objects&quot;, &quot;users&quot;
+  add_foreign_key &quot;run_time_objects_permissions&quot;, &quot;run_time_objects&quot;
+  add_foreign_key &quot;run_time_objects_permissions&quot;, &quot;users&quot;
 end
 </code>
   </div>

@@ -47,7 +47,7 @@
     <div class="file-time">
       <span class="committed-at">
         
-          Updated <time class='js-timeago' datetime='2024-10-04 19:28:56 -0500'>2024-10-04 19:28:56 -0500</time>
+          Updated <time class='js-timeago' datetime='2024-10-18 20:50:19 -0500'>2024-10-18 20:50:19 -0500</time>
         
       </span>
     </div>
@@ -62,21 +62,21 @@
       <div class="col-md-8">
         <div class="row">
           <div class="col-md-1">
-            <div class="rating a big">
-              A
+            <div class="rating b big">
+              B
             </div>
           </div>
           <div class="code-statistics col-md-11">
             <div class="col-md-3">
-              <div><span class="metric">41</span><small> lines of codes</small></div>
+              <div><span class="metric">48</span><small> lines of codes</small></div>
               <div><span class="metric">0</span><small> methods</small></div>
             </div>
             <div class="col-md-3">
               <div><span class="metric">N/A</span><small> complexity/method</small></div>
-              <div><span class="metric">2</span><small> churn</small></div>
+              <div><span class="metric">3</span><small> churn</small></div>
             </div>
             <div class="col-md-3">
-              <div><span class="metric">40.4</span><small> complexity</small></div>
+              <div><span class="metric">50.5</span><small> complexity</small></div>
               <div><span class="metric">0</span><small> duplications</small></div>
             </div>
           </div>
@@ -136,6 +136,13 @@ class ImagesControllerTest &lt; ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to images_url
+  end
+
+  test &quot;should rescan image and redirect to show&quot; do
+    post rescan_image_url(@image)
+    @image.reloa
+    assert_redirected_to image_url(@image)
+    assert_not_nil @image.report# assert_equal &#39;expected_report_value&#39;, @image.report # You can add an assertion to check the contents if needed
   end
 end
 </code>

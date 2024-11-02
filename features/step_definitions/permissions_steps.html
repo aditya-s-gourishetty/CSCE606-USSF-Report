@@ -47,12 +47,12 @@
     <div class="file-time">
       <span class="committed-at">
         
-          Updated <time class='js-timeago' datetime='2024-10-31 14:00:33 -0500'>2024-10-31 14:00:33 -0500</time>
+          Updated <time class='js-timeago' datetime='2024-11-01 15:12:39 -0500'>2024-11-01 15:12:39 -0500</time>
         
       </span>
     </div>
     <div>
-      <h3><small>app/controllers /</small> users_controller.rb</h3>
+      <h3><small>features/step_definitions /</small> permissions_steps.rb</h3>
     </div>
   </div>
   <!--End Page Title -->
@@ -62,21 +62,21 @@
       <div class="col-md-8">
         <div class="row">
           <div class="col-md-1">
-            <div class="rating a big">
-              A
+            <div class="rating b big">
+              B
             </div>
           </div>
           <div class="code-statistics col-md-11">
             <div class="col-md-3">
-              <div><span class="metric">2</span><small> lines of codes</small></div>
+              <div><span class="metric">47</span><small> lines of codes</small></div>
               <div><span class="metric">0</span><small> methods</small></div>
             </div>
             <div class="col-md-3">
               <div><span class="metric">N/A</span><small> complexity/method</small></div>
-              <div><span class="metric">13</span><small> churn</small></div>
+              <div><span class="metric">5</span><small> churn</small></div>
             </div>
             <div class="col-md-3">
-              <div><span class="metric">0.0</span><small> complexity</small></div>
+              <div><span class="metric">56.96</span><small> complexity</small></div>
               <div><span class="metric">0</span><small> duplications</small></div>
             </div>
           </div>
@@ -88,7 +88,7 @@
             <li><a href="#" id="toggle-code" class="toggle-button button">code</a></li>
             <li class="active">
               <a href="#" id="toggle-smells" class="toggle-button button">
-                1
+                0
                 smell
               </a>
             </li>
@@ -97,7 +97,52 @@
       </div>
     </div>
 
-    <code class="prettyprint linenums lang-ruby file-code js-file-code">class UsersController &lt; ApplicationController<ol class="nocode errors smells">  <li>    <div class="description">      <div class="heading">        <span>          <i class="fa fa-warning" aria-hidden="true"></i>          <a href="https://github.com/troessner/reek/blob/master/docs/Irresponsible-Module.md" target="_blank"><b>IrresponsibleModule</b></a>        </span>      </div>      <span>UsersController has no descriptive comment</span>          </div>  </li></ol>
+    <code class="prettyprint linenums lang-ruby file-code js-file-code">Given(&quot;I am the owner of an object&quot;) do
+  @owner_user = User.find_by(email: &quot;test@example.com&quot;)
+  @run_time_object = RunTimeObject.create(name: &quot;Test Object&quot;, user: @owner_user)
+  @current_run_time_object = @run_time_object
+end
+
+Given(&quot;user {string} exists&quot;) do |full_name|
+  first_name, last_name = full_name.split(&quot; &quot;)
+  User.find_or_create_by(first_name: first_name, last_name: last_name) do |user|
+    user.email = &quot;#{first_name.downcase}@example.com&quot;
+  end
+end
+
+When(&quot;I visit the runtime object page&quot;) do
+  visit run_time_object_images_path(@current_run_time_object)
+end
+
+When(&quot;I check the checkbox for {string}&quot;) do |user_full_name|
+  first_name, last_name = user_full_name.split(&quot; &quot;)
+  user = User.find_by(first_name: first_name, last_name: last_name)
+  check(&quot;user_ids[]&quot;, option: user.id)
+end
+
+When(&quot;I submit the share form&quot;) do
+  click_button &quot;Share&quot;
+end
+
+Then(&quot;{string} should have permission to access the runtime object&quot;) do |user_full_name|
+  first_name, last_name = user_full_name.split(&quot; &quot;)
+  user = User.find_by(first_name: first_name, last_name: last_name)
+  expect(@run_time_object.run_time_objects_permissions.exists?(user_id: user.id)).to be true
+end
+
+Then(&quot;I should be redirected to the runtime object page&quot;) do
+  visit run_time_object_path(@run_time_object)
+end
+
+Given(&quot;I am shared access to a runtime object&quot;) do
+  @another_user = User.create(email: &quot;dummy@example.com&quot;, first_name: &quot;Dummy&quot;, last_name: &quot;User&quot;)
+  @owner_user = User.find_by(email: &quot;test@example.com&quot;)
+  @current_run_time_object = RunTimeObject.create(name: &quot;Test Object&quot;, user: @another_user)
+  RunTimeObjectsPermission.create(run_time_object: @shared_run_time_object, user_id: @owner_user.id, permission: &quot;r&quot;)
+end
+
+Then(&quot;I should not see the {string} button&quot;) do |button_text|
+  expect(page).not_to have_button(button_text)
 end
 </code>
   </div>

@@ -47,7 +47,7 @@
     <div class="file-time">
       <span class="committed-at">
         
-          Updated <time class='js-timeago' datetime='2024-10-18 20:04:56 -0500'>2024-10-18 20:04:56 -0500</time>
+          Updated <time class='js-timeago' datetime='2024-10-31 00:58:13 -0500'>2024-10-31 00:58:13 -0500</time>
         
       </span>
     </div>
@@ -73,7 +73,7 @@
             </div>
             <div class="col-md-3">
               <div><span class="metric">N/A</span><small> complexity/method</small></div>
-              <div><span class="metric">16</span><small> churn</small></div>
+              <div><span class="metric">18</span><small> churn</small></div>
             </div>
             <div class="col-md-3">
               <div><span class="metric">0.0</span><small> complexity</small></div>
@@ -110,9 +110,9 @@
 require &#39;csv&#39;
 
 User.find_or_create_by!(
-  email: &quot;testuser@gmail.com&quot;,
+  email: &quot;adityasg@tamu.edu&quot;,
 )
-me = User.find_by(email: &quot;testuser@gmail.com&quot;)
+me = User.find_by(email: &quot;adityasg@tamu.edu&quot;)
 puts me.inspect  # This will output the user or nil if not found
 Image.destroy_all
 RunTimeObject.destroy_all
@@ -148,41 +148,41 @@ Image.create!([
     report: &quot;This is a report for image 1.&quot;,
     run_time_object_id: run_time_objects[0].id
   }
-#   {
-#     tag: &quot;image 2&quot;,
-#     report: &quot;This is a report for image 2.&quot;,
-#     run_time_object_id: run_time_objects[0].id
-#   },
-#   {
-#     tag: &quot;image 3&quot;,
-#     report: &quot;This is a report for image 3.&quot;,
-#     run_time_object_id: run_time_objects[0].id
-#   },
-#   {
-#     tag: &quot;image 4&quot;,
-#     report: &quot;This is a report for image 4.&quot;,
-#     run_time_object_id: run_time_objects[0].id
-#   },
-#   {
-#     tag: &quot;image 5&quot;,
-#     report: &quot;This is a report for image 5.&quot;,
-#     run_time_object_id: run_time_objects[0].id
-#   },
-#   {
-#     tag: &quot;image 6&quot;,
-#     report: &quot;This is a report for image 6.&quot;,
-#     run_time_object_id: run_time_objects[0].id
-#   },
-#   {
-#     tag: &quot;image 7&quot;,
-#     report: &quot;This is a report for image 7.&quot;,
-#     run_time_object_id: run_time_objects[0].id
-#   },
-#   {
-#     tag: &quot;image 8&quot;,
-#     report: &quot;This is a report for image 8.&quot;,
-#     run_time_object_id: run_time_objects[0].id
-#   }
+  #   {
+  #     tag: &quot;image 2&quot;,
+  #     report: &quot;This is a report for image 2.&quot;,
+  #     run_time_object_id: run_time_objects[0].id
+  #   },
+  #   {
+  #     tag: &quot;image 3&quot;,
+  #     report: &quot;This is a report for image 3.&quot;,
+  #     run_time_object_id: run_time_objects[0].id
+  #   },
+  #   {
+  #     tag: &quot;image 4&quot;,
+  #     report: &quot;This is a report for image 4.&quot;,
+  #     run_time_object_id: run_time_objects[0].id
+  #   },
+  #   {
+  #     tag: &quot;image 5&quot;,
+  #     report: &quot;This is a report for image 5.&quot;,
+  #     run_time_object_id: run_time_objects[0].id
+  #   },
+  #   {
+  #     tag: &quot;image 6&quot;,
+  #     report: &quot;This is a report for image 6.&quot;,
+  #     run_time_object_id: run_time_objects[0].id
+  #   },
+  #   {
+  #     tag: &quot;image 7&quot;,
+  #     report: &quot;This is a report for image 7.&quot;,
+  #     run_time_object_id: run_time_objects[0].id
+  #   },
+  #   {
+  #     tag: &quot;image 8&quot;,
+  #     report: &quot;This is a report for image 8.&quot;,
+  #     run_time_object_id: run_time_objects[0].id
+  #   }
 ])
 
 CveNistMapping.delete_all

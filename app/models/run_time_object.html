@@ -47,7 +47,7 @@
     <div class="file-time">
       <span class="committed-at">
         
-          Updated <time class='js-timeago' datetime='2024-09-30 22:44:33 -0500'>2024-09-30 22:44:33 -0500</time>
+          Updated <time class='js-timeago' datetime='2024-11-01 17:38:11 -0500'>2024-11-01 17:38:11 -0500</time>
         
       </span>
     </div>
@@ -68,12 +68,12 @@
           </div>
           <div class="code-statistics col-md-11">
             <div class="col-md-3">
-              <div><span class="metric">4</span><small> lines of codes</small></div>
+              <div><span class="metric">8</span><small> lines of codes</small></div>
               <div><span class="metric">0</span><small> methods</small></div>
             </div>
             <div class="col-md-3">
               <div><span class="metric">N/A</span><small> complexity/method</small></div>
-              <div><span class="metric">1</span><small> churn</small></div>
+              <div><span class="metric">4</span><small> churn</small></div>
             </div>
             <div class="col-md-3">
               <div><span class="metric">0.0</span><small> complexity</small></div>
@@ -99,7 +99,11 @@
 
     <code class="prettyprint linenums lang-ruby file-code js-file-code">class RunTimeObject &lt; ApplicationRecord<ol class="nocode errors smells">  <li>    <div class="description">      <div class="heading">        <span>          <i class="fa fa-warning" aria-hidden="true"></i>          <a href="https://github.com/troessner/reek/blob/master/docs/Irresponsible-Module.md" target="_blank"><b>IrresponsibleModule</b></a>        </span>      </div>      <span>RunTimeObject has no descriptive comment</span>          </div>  </li></ol>
   belongs_to :user
-  has_many :images
+  has_many :images, dependent: :destroy
+  has_many :run_time_objects_permissions, dependent: :destroy
+  has_many :shared_users, through: :run_time_objects_permissions, source: :user, dependent: :destroy
+
+  validates :name, presence: true
 end
 </code>
   </div>

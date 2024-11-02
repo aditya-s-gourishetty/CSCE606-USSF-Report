@@ -47,7 +47,7 @@
     <div class="file-time">
       <span class="committed-at">
         
-          Updated <time class='js-timeago' datetime='2024-10-18 19:14:05 -0500'>2024-10-18 19:14:05 -0500</time>
+          Updated <time class='js-timeago' datetime='2024-11-01 18:42:50 -0500'>2024-11-01 18:42:50 -0500</time>
         
       </span>
     </div>
@@ -62,22 +62,22 @@
       <div class="col-md-8">
         <div class="row">
           <div class="col-md-1">
-            <div class="rating d big">
-              D
+            <div class="rating f big">
+              F
             </div>
           </div>
           <div class="code-statistics col-md-11">
             <div class="col-md-3">
-              <div><span class="metric">121</span><small> lines of codes</small></div>
+              <div><span class="metric">197</span><small> lines of codes</small></div>
               <div><span class="metric">0</span><small> methods</small></div>
             </div>
             <div class="col-md-3">
               <div><span class="metric">N/A</span><small> complexity/method</small></div>
-              <div><span class="metric">6</span><small> churn</small></div>
+              <div><span class="metric">11</span><small> churn</small></div>
             </div>
             <div class="col-md-3">
-              <div><span class="metric">267.1</span><small> complexity</small></div>
-              <div><span class="metric">0</span><small> duplications</small></div>
+              <div><span class="metric">576.33</span><small> complexity</small></div>
+              <div><span class="metric">76</span><small> duplications</small></div>
             </div>
           </div>
         </div>
@@ -88,8 +88,8 @@
             <li><a href="#" id="toggle-code" class="toggle-button button">code</a></li>
             <li class="active">
               <a href="#" id="toggle-smells" class="toggle-button button">
-                0
-                smell
+                11
+                smells
               </a>
             </li>
           </ul>
@@ -102,50 +102,49 @@
 RSpec.describe ImagesController, type: :controller do
   let(:user) { User.create(email: &quot;test@example.com&quot;, first_name: &quot;Test&quot;, last_name: &quot;User&quot;) }
   let(:run_time_object) { RunTimeObject.create(name: &quot;Sample Object&quot;, description: &quot;A sample runtime object&quot;, user: user) }
+  let(:image) { Image.create(tag: &quot;alpine&quot;, run_time_object: run_time_object) }
+  let(:valid_json_report) do
+    &#39;{&quot;Results&quot;: [{&quot;Target&quot;: &quot;example&quot;, &quot;Vulnerabilities&quot;: [{&quot;VulnerabilityID&quot;: &quot;CVE-2023-0001&quot;, &quot;Title&quot;: &quot;Sample Vulnerability&quot;, &quot;Severity&quot;: &quot;HIGH&quot;, &quot;InstalledVersion&quot;: &quot;1.0&quot;, &quot;FixedVersion&quot;: &quot;1.1&quot;, &quot;Status&quot;: &quot;affected&quot;, &quot;Description&quot;: &quot;A vulnerability description.&quot;}]}]}&#39;
+  end
+  let(:invalid_json_report) { &quot;{invalid JSON}&quot; }
 
   before do
     session[:user_id] = user.id
+    RunTimeObject.destroy_all
     Image.destroy_all
   end
 
   describe &quot;images index&quot; do
     it &quot;returns a successful response&quot; do
-      get :index, format: :json
+      get :index, params: { run_time_object_id: run_time_object.id }
       expect(response).to be_successful
     end
   end
 
   describe &quot;creates&quot; do
-    it &#39;creates image with valid parameters&#39; do
-      post :create, params: { image: {
+    it &#39;creates image with valid parameters&#39; do<ol class="nocode errors smells">  <li>    <div class="description">      <div class="heading">        <span>          <i class="fa fa-warning" aria-hidden="true"></i>          <a href="http://docs.seattlerb.org/flog/" target="_blank"><b>HighComplexity</b></a>        </span>      </div>      <span>describe(creates)::it#creates image with valid parameters has a flog score of 25</span>          </div>  </li></ol>
+      post :create, params: { run_time_object_id: run_time_object.id, image: {
         tag: &#39;alpine&#39;,
         run_time_object_id: run_time_object.id
       } }
-      expect(response).to redirect_to(Image.last)
+      expect(response).to redirect_to(run_time_object_image_path(run_time_object.id, Image.last))
     end
 
     it &#39;creates image with invalid parameters&#39; do
-      post :create, params: { image: {
+      post :create, params: { run_time_object_id: run_time_object.id, image: {
         tag: &#39;&#39;,
         run_time_object_id: &#39;&#39;
       } }
-      expect(response).to redirect_to(new_image_path)
+      expect(response).to redirect_to(run_time_object_image_path(run_time_object.id, Image.last))
     end
   end
 
   describe &quot;update&quot; do
     it &quot;updates image with valid parameters&quot; do
       image = Image.create(tag: &quot;alpine&quot;, run_time_object: run_time_object)
-      put :update, params: { id: image.id, image: { tag: &quot;ubuntu&quot; } }
+      put :update, params: { run_time_object_id: run_time_object.id, id: image.id, image: { tag: &quot;ubuntu&quot; } }
       image.reload
       expect(image.tag).to eq(&quot;ubuntu&quot;)
-    end
-
-    it &quot;updates image with invalid parameters&quot; do
-      image = Image.create(tag: &quot;alpine&quot;, run_time_object: run_time_object)
-      put :update, params: { id: image.id, image: { tag: &#39;&#39;, run_time_object_id: &#39;&#39; } }
-      puts &quot;Response status: #{response.status}&quot;
-      expect(response).to have_http_status(:unprocessable_entity)
     end
   end
 
@@ -153,7 +152,7 @@ RSpec.describe ImagesController, type: :controller do
     it &quot;destroys the requested image&quot; do
       image = Image.create(tag: &quot;alpine&quot;, run_time_object: run_time_object)
       expect {
-        delete :destroy, params: { id: image.to_param }
+        delete :destroy, params: { run_time_object_id: run_time_object.id, id: image.to_param }
       }.to change(Image, :count).by(-1)
     end
   end
@@ -161,26 +160,27 @@ RSpec.describe ImagesController, type: :controller do
   describe &quot;create with dynamic image name&quot; do
     it &#39;scans the image based on dynamic tag provided&#39; do
       allow(controller).to receive(:`).and_return(&quot;Mock scan result&quot;)
-      post :create, params: { image: { tag: &#39;python:3.4-alpine&#39;, run_time_object_id: run_time_object.id } }
+      post :create, params: { run_time_object_id: run_time_object.id, image: { tag: &#39;python:3.4-alpine&#39; } }
       expect(assigns(:image).report).to eq(&quot;Mock scan result&quot;)
     end
-    it &#39;redirects to right page&#39; do
+
+    it &#39;redirects to right page&#39; do<ol class="nocode errors smells">  <li>    <div class="description">      <div class="heading">        <span>          <i class="fa fa-warning" aria-hidden="true"></i>          <a href="http://docs.seattlerb.org/flog/" target="_blank"><b>HighComplexity</b></a>        </span>      </div>      <span>describe(create with dynamic image name)::it#redirects to right page has a flog score of 30</span>          </div>  </li></ol>
       allow(controller).to receive(:`).and_return(&quot;Mock scan result&quot;)
-      post :create, params: { image: { tag: &#39;python:3.4-alpine&#39;, run_time_object_id: run_time_object.id } }
-      expect(response).to redirect_to(Image.last)
+      post :create, params: { run_time_object_id: run_time_object.id, image: { tag: &#39;python:3.4-alpine&#39; } }
+      expect(response).to redirect_to(run_time_object_image_path(run_time_object.id, Image.last))
     end
   end
 
   describe &quot;show&quot; do
     it &quot;displays the report for a scanned image&quot; do
       image = Image.create(tag: &quot;python:3.4-alpine&quot;, report: &#39;{&quot;Results&quot;:[{&quot;Target&quot;:&quot;ABC&quot;,&quot;Vulnerabilities&quot;:[{&quot;VulnerabilityID&quot;: &quot;CVE-2016-2781&quot;, &quot;FixedVersion&quot;: &quot;1.1.1&quot;}]}]}&#39;, run_time_object: run_time_object)
-      get :show, params: { id: image.id }
+      get :show, params: { run_time_object_id: run_time_object.id, id: image.id }
       expect(assigns(:vulnerability_summary)).to be_present
     end
 
     it &quot;response is successful&quot; do
       image = Image.create(tag: &quot;python:3.4-alpine&quot;, report: &#39;{&quot;Results&quot;:[{&quot;Target&quot;:&quot;ABC&quot;,&quot;Vulnerabilities&quot;:[]}]}&#39;, run_time_object: run_time_object)
-      get :show, params: { id: image.id }
+      get :show, params: { run_time_object_id: run_time_object.id, id: image.id }
       expect(response).to be_successful
     end
   end
@@ -188,24 +188,25 @@ RSpec.describe ImagesController, type: :controller do
   describe &quot;create without running scan&quot; do
     it &#39;creates image without running a scan&#39; do
       allow(controller).to receive(:`).and_return(nil)  # No scan is performed
-      post :create, params: { image: { tag: &#39;ubuntu:latest&#39;, run_time_object_id: run_time_object.id } }
+      post :create, params: { run_time_object_id: run_time_object.id, image: { tag: &#39;ubuntu:latest&#39; } }
       expect(assigns(:image).report).to be_nil
     end
-    it &#39;redirects to right page&#39; do
+
+    it &#39;redirects to right page&#39; do<ol class="nocode errors smells">  <li>    <div class="description">      <div class="heading">        <span>          <i class="fa fa-warning" aria-hidden="true"></i>          <a href="http://docs.seattlerb.org/flog/" target="_blank"><b>HighComplexity</b></a>        </span>      </div>      <span>describe(create without running scan)::it#redirects to right page has a flog score of 30</span>          </div>  </li></ol>
       allow(controller).to receive(:`).and_return(nil)  # No scan is performed
-      post :create, params: { image: { tag: &#39;ubuntu:latest&#39;, run_time_object_id: run_time_object.id } }
-      expect(response).to redirect_to(Image.last)
+      post :create, params: { run_time_object_id: run_time_object.id, image: { tag: &#39;ubuntu:latest&#39; } }
+      expect(response).to redirect_to(run_time_object_image_path(run_time_object.id, Image.last))
     end
   end
 
   describe &quot;new&quot; do
-    it &quot;sets the correct user for new action&quot; do
-      get :new
+    it &quot;sets the correct user for new action&quot; do<ol class="nocode errors smells">  <li>    <div class="description">      <div class="heading">        <span>          <i class="fa fa-warning" aria-hidden="true"></i>          <a href="http://docs.seattlerb.org/flay/" target="_blank"><b>DuplicateCode</b></a>        </span>      </div>      <span>Similar code found in 3 nodes</span>              <span>Locations:</span>                  <a href="images_controller_spec.html#L104" class="js-smell-location">0</a>                  <a href="run_time_objects_controller_spec.html#L74" class="js-smell-location">1</a>                  <a href="run_time_objects_controller_spec.html#L142" class="js-smell-location">2</a>                  </div>  </li></ol>
+      get :new, params: { run_time_object_id: run_time_object.id }
       expect(assigns(:user)).to eq(user)
     end
 
     it &quot;renders the new template&quot; do
-      get :new
+      get :new, params: { run_time_object_id: run_time_object.id }
       expect(response).to render_template(:new)
     end
   end
@@ -213,8 +214,83 @@ RSpec.describe ImagesController, type: :controller do
   describe &quot;response formats&quot; do
     it &quot;returns HTML format for show&quot; do
       image = Image.create(tag: &quot;python:3.4-alpine&quot;, report: &#39;{&quot;Results&quot;:[{&quot;Target&quot;:&quot;ABC&quot;,&quot;Vulnerabilities&quot;:[]}]}&#39;, run_time_object: run_time_object)
-      get :show, params: { id: image.id }, format: :html
+      get :show, params: { run_time_object_id: run_time_object.id, id: image.id }, format: :html
       expect(response.content_type).to eq(&quot;text/html; charset=utf-8&quot;)
+    end
+  end
+
+  describe &quot;rescan&quot; do
+    let!(:image) { Image.create(tag: &quot;alpine&quot;, run_time_object: run_time_object) }
+
+    before do
+      allow(controller).to receive(:current_user).and_return(user)
+    end
+
+    context &#39;when the scan is successful&#39; do
+      before do
+        allow(controller).to receive(:`).and_return(&#39;{&quot;Results&quot;:[]}&#39;) # Mocking the scan output
+        post :rescan, params: { run_time_object_id: run_time_object.id, id: image.id }
+      end
+
+      it &#39;updates the image report&#39; do
+        image.reload
+        expect(image.report).to eq(&#39;{&quot;Results&quot;:[]}&#39;)
+      end
+
+      it &#39;redirects to the image show page&#39; do<ol class="nocode errors smells">  <li>    <div class="description">      <div class="heading">        <span>          <i class="fa fa-warning" aria-hidden="true"></i>          <a href="http://docs.seattlerb.org/flog/" target="_blank"><b>HighComplexity</b></a>        </span>      </div>      <span>describe(rescan)::context(when the scan is successful)::it#redirects to the image show page has a flog score of 27</span>          </div>  </li></ol>
+        expect(response).to redirect_to(run_time_object_image_path(run_time_object.id, image))
+        expect(flash[:notice]).to eq(&quot;Rescan was successful.&quot;)
+      end
+    end
+  end
+
+  describe &quot;GET #download&quot; do
+    context &quot;when the report is valid JSON&quot; do
+      before do
+        image.update(report: valid_json_report)
+      end
+
+      it &quot;returns a CSV file&quot; do<ol class="nocode errors smells">  <li>    <div class="description">      <div class="heading">        <span>          <i class="fa fa-warning" aria-hidden="true"></i>          <a href="http://docs.seattlerb.org/flog/" target="_blank"><b>HighComplexity</b></a>        </span>      </div>      <span>describe(GET #download)::context(when the report is valid JSON)::it#returns a CSV file has a flog score of 38</span>          </div>  </li></ol>
+        get :download, params: { run_time_object_id: run_time_object.id, id: image.id }
+        expect(response.headers[&#39;Content-Type&#39;]).to include &#39;text/csv&#39;
+        expect(response.headers[&#39;Content-Disposition&#39;]).to include &#39;attachment&#39;
+      end
+
+      it &quot;includes the correct CSV headers&quot; do<ol class="nocode errors smells">  <li>    <div class="description">      <div class="heading">        <span>          <i class="fa fa-warning" aria-hidden="true"></i>          <a href="http://docs.seattlerb.org/flog/" target="_blank"><b>HighComplexity</b></a>        </span>      </div>      <span>describe(GET #download)::context(when the report is valid JSON)::it#includes the correct CSV headers has a flog score of 25</span>          </div>  </li></ol>
+        get :download, params: { run_time_object_id: run_time_object.id, id: image.id }
+        csv_data = CSV.parse(response.body, headers: true)
+        expect(csv_data.headers).to include(&quot;Title&quot;, &quot;Severity&quot;, &quot;ID&quot;, &quot;Installed Version&quot;, &quot;Fixed Version&quot;, &quot;Status&quot;, &quot;NIST Identifiers&quot;, &quot;Description&quot;)
+      end
+
+      it &quot;includes vulnerability data in the CSV&quot; do<ol class="nocode errors smells">  <li>    <div class="description">      <div class="heading">        <span>          <i class="fa fa-warning" aria-hidden="true"></i>          <a href="http://docs.seattlerb.org/flog/" target="_blank"><b>HighComplexity</b></a>        </span>      </div>      <span>describe(GET #download)::context(when the report is valid JSON)::it#includes vulnerability data in the CSV has a flog score of 26</span>          </div>  </li></ol>
+        get :download, params: { run_time_object_id: run_time_object.id, id: image.id }
+        csv_data = CSV.parse(response.body, headers: true)
+        expect(csv_data[0][&quot;Title&quot;]).to eq(&quot;Sample Vulnerability&quot;)
+      end
+    end
+
+    context &quot;when the report is invalid JSON&quot; do
+      before do
+        image.update(report: invalid_json_report)
+      end
+
+      it &quot;redirects to the image show page with an alert&quot; do<ol class="nocode errors smells">  <li>    <div class="description">      <div class="heading">        <span>          <i class="fa fa-warning" aria-hidden="true"></i>          <a href="http://docs.seattlerb.org/flay/" target="_blank"><b>DuplicateCode</b></a>        </span>      </div>      <span>Similar code found in 2 nodes</span>              <span>Locations:</span>                  <a href="images_controller_spec.html#L178" class="js-smell-location">0</a>                  <a href="images_controller_spec.html#L190" class="js-smell-location">1</a>                  </div>  </li>  <li>    <div class="description">      <div class="heading">        <span>          <i class="fa fa-warning" aria-hidden="true"></i>          <a href="http://docs.seattlerb.org/flog/" target="_blank"><b>HighComplexity</b></a>        </span>      </div>      <span>describe(GET #download)::context(when the report is invalid JSON)::it#redirects to the image show page with an alert has a flog score of 34</span>          </div>  </li></ol>
+        get :download, params: { run_time_object_id: run_time_object.id, id: image.id }
+        expect(response).to redirect_to(run_time_object_image_path(run_time_object, image))
+        expect(flash[:alert]).to eq(&quot;Failed to parse the report. Invalid JSON format.&quot;)
+      end
+    end
+
+    context &quot;when the report is nil&quot; do
+      before do
+        image.update(report: nil)
+      end
+
+      it &quot;redirects to the image show page with an alert&quot; do<ol class="nocode errors smells">  <li>    <div class="description">      <div class="heading">        <span>          <i class="fa fa-warning" aria-hidden="true"></i>          <a href="http://docs.seattlerb.org/flay/" target="_blank"><b>DuplicateCode</b></a>        </span>      </div>      <span>Similar code found in 2 nodes</span>              <span>Locations:</span>                  <a href="images_controller_spec.html#L178" class="js-smell-location">0</a>                  <a href="images_controller_spec.html#L190" class="js-smell-location">1</a>                  </div>  </li>  <li>    <div class="description">      <div class="heading">        <span>          <i class="fa fa-warning" aria-hidden="true"></i>          <a href="http://docs.seattlerb.org/flog/" target="_blank"><b>HighComplexity</b></a>        </span>      </div>      <span>describe(GET #download)::context(when the report is nil)::it#redirects to the image show page with an alert has a flog score of 34</span>          </div>  </li></ol>
+        get :download, params: { run_time_object_id: run_time_object.id, id: image.id }
+        expect(response).to redirect_to(run_time_object_image_path(run_time_object, image))
+        expect(flash[:alert]).to eq(&quot;No report available for this image.&quot;)
+      end
     end
   end
 end
